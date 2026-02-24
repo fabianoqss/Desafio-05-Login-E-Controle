@@ -75,6 +75,7 @@ public class ProductService { // Essa vai ser minha classe de serviço , onde eu
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
 
+        entity.getCategories().clear();
         for(CategoryDTO catDto : dto.getCategories()){
             Category cat = new Category();
             cat.setId(catDto.getId());

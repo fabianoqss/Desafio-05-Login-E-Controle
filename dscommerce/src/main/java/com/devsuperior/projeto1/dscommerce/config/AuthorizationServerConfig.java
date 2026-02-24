@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,6 +38,8 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -62,19 +65,24 @@ public class AuthorizationServerConfig {
 	private UserDetailsService userDetailsService;
 
 	@Bean
-	@Order(2)
+	@Order(1) // Garante que esta verificação venha primeiro
 	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
 
+		// ESTA É A LINHA QUE FALTA:
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-		// @formatter:off
+		// Diz ao Spring que esta chain só cuida dos endpoints do Auth Server
 		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
-				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
-				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder())));
+				.oidc(Customizer.withDefaults());
 
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
-		// @formatter:on
+		http.exceptionHandling((exceptions) -> exceptions
+				.defaultAuthenticationEntryPointFor(
+						new LoginUrlAuthenticationEntryPoint("/login"),
+						new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+				)
+		);
+
+		// ... seu código anterior do tokenEndpoint ...
 
 		return http.build();
 	}
