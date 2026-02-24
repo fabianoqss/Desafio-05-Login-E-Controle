@@ -1,6 +1,8 @@
 package com.devsuperior.projeto1.dscommerce.services;
 
+import com.devsuperior.projeto1.dscommerce.dto.CategoryDTO;
 import com.devsuperior.projeto1.dscommerce.dto.ProductDTO;
+import com.devsuperior.projeto1.dscommerce.entities.Category;
 import com.devsuperior.projeto1.dscommerce.entities.Product;
 import com.devsuperior.projeto1.dscommerce.repositories.ProductRepository;
 import com.devsuperior.projeto1.dscommerce.services.exceptions.DatabaseException;
@@ -72,5 +74,11 @@ public class ProductService { // Essa vai ser minha classe de serviço , onde eu
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
+
+        for(CategoryDTO catDto : dto.getCategories()){
+            Category cat = new Category();
+            cat.setId(catDto.getId());
+            entity.getCategories().add(cat);
+        }
     }
 }
