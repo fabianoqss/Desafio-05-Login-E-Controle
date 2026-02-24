@@ -1,5 +1,6 @@
 package com.devsuperior.projeto1.dscommerce.services;
 
+import com.devsuperior.projeto1.dscommerce.dto.UserDTO;
 import com.devsuperior.projeto1.dscommerce.entities.Role;
 import com.devsuperior.projeto1.dscommerce.entities.User;
 import com.devsuperior.projeto1.dscommerce.projections.UserDetailsProjection;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,6 +51,13 @@ public class UserService implements UserDetailsService {
         }catch (Exception e){
             throw new UsernameNotFoundException("User not found");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO getMe(){
+        User user = authenticated();
+
+        return new UserDTO(user);
     }
 
 
