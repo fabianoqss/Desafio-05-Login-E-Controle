@@ -1,10 +1,7 @@
 package com.devsuperior.projeto1.dscommerce.controllers;
 
 import com.devsuperior.projeto1.dscommerce.dto.OrderDTO;
-import com.devsuperior.projeto1.dscommerce.dto.ProductDTO;
-import com.devsuperior.projeto1.dscommerce.dto.UserDTO;
 import com.devsuperior.projeto1.dscommerce.services.OrderService;
-import com.devsuperior.projeto1.dscommerce.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
