@@ -30,10 +30,15 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
 
 
+    @Autowired
+    private AuthService authService;
+
     @Transactional(readOnly = true) // Sim, exatamente! A anotação @Transactional em Java (especialmente com Spring Framework) indica que o metodo ou classe participa de uma transação do banco de dados.
     public OrderDTO findByID(Long id){
         Order order = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso Não Encontrado!"));
+
+        authService.validateSelfOrAdmin(order.getClient().getId());
         return new OrderDTO(order);
     }
 
